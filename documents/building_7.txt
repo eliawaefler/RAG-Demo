@@ -1,0 +1,5 @@
+Building Name: The Shard
+Location: London
+Height: 310 m
+Floors: 95
+Year Completed: 2012

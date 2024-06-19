@@ -1,0 +1,5 @@
+Building Name: Shanghai Tower
+Location: Shanghai
+Height: 632 m
+Floors: 128
+Year Completed: 2015

@@ -1,0 +1,5 @@
+Building Name: Taipei 101
+Location: Taipei
+Height: 509.2 m
+Floors: 101
+Year Completed: 2004

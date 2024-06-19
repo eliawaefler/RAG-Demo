@@ -1,0 +1,5 @@
+Building Name: Burj Khalifa
+Location: Dubai
+Height: 828 m
+Floors: 163
+Year Completed: 2010

@@ -1,0 +1,5 @@
+Building Name: Lotte World Tower
+Location: Seoul
+Height: 555.7 m
+Floors: 123
+Year Completed: 2016
