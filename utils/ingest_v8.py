@@ -70,67 +70,73 @@ def vectorize_text(text):
     embeddings = outputs.last_hidden_state.mean(dim=1).detach().numpy().tolist()
     return embeddings
 
-def process_folder(folder_path, output_folder):
+def vectorize_document(filepath, output_folder):
+    filename = os.path.basename(filepath)
+    if filename.lower().endswith(('.txt', '.pdf', '.docx', '.xlsx', '.jpg', '.png', '.jpeg')):
+        doc = {
+            "name": filename,
+            "unique_id": sha256_hash(filepath),
+            "disziplin": "",
+            "doctype": "",
+            "hauptkategorie": "",
+            "kategorie": "",
+            "subkategorie": "",
+            "data": []
+        }
+        text = ""
+        images = []
+
+        if filename.lower().endswith('.pdf'):
+            text, images = process_pdf(filepath)
+        elif filename.lower().endswith('.docx'):
+            text, images = process_docx(filepath)
+        elif filename.lower().endswith('.xlsx'):
+            text, images = process_xlsx(filepath)
+        elif filename.lower().endswith(('.jpg', '.png', '.jpeg')):
+            text, images = process_image(filepath)
+        elif filename.lower().endswith('.txt'):
+            with open(filepath, 'r') as file:
+                text = file.read()
+
+        chunks = chunk_text(text)
+        for i, chunk in enumerate(chunks):
+            chunk_vector = vectorize_text(chunk)
+            doc["data"].append({
+                "id": i + 1,
+                "text": chunk,
+                "vektor": chunk_vector
+            })
+
+        for i, image in enumerate(images):
+            inputs = clip_processor(images=image, return_tensors="pt")
+            outputs = clip_model.get_image_features(**inputs)
+            image_vector = outputs.detach().numpy().tolist()
+
+            # Use CLIP to get image description
+            text_description = clip_processor.tokenizer.decode(clip_model.get_text_features(**inputs).argmax(dim=-1))
+
+            # Vectorize the description using sentence-transformers model
+            description_vector = vectorize_text(text_description)
+
+            doc["data"].append({
+                "id": len(doc["data"]) + 1,
+                "text": text_description,
+                "vektor": description_vector,
+                "bildvektor": image_vector,
+                "titel": f"Bild {i + 1}"
+            })
+
+        output_filepath = os.path.join(output_folder, filename + ".json")
+        with open(output_filepath, 'w', encoding='utf-8') as f:
+            json.dump(doc, f, ensure_ascii=False, indent=4)
+
+def main():
+    input_folder = "documents"
+    output_folder = "processed_docs"
     os.makedirs(output_folder, exist_ok=True)
-    for filename in os.listdir(folder_path):
-        filepath = os.path.join(folder_path, filename)
-        if filename.lower().endswith(('.txt', '.pdf', '.docx', '.xlsx', '.jpg', '.png', '.jpeg')):
-            doc = {
-                "name": filename,
-                "unique_id": sha256_hash(filepath),
-                "disziplin": "",
-                "doctype": "",
-                "hauptkategorie": "",
-                "kategorie": "",
-                "subkategorie": "",
-                "data": []
-            }
-            text = ""
-            images = []
+    for filename in os.listdir(input_folder):
+        filepath = os.path.join(input_folder, filename)
+        vectorize_document(filepath, output_folder)
 
-            if filename.lower().endswith('.pdf'):
-                text, images = process_pdf(filepath)
-            elif filename.lower().endswith('.docx'):
-                text, images = process_docx(filepath)
-            elif filename.lower().endswith('.xlsx'):
-                text, images = process_xlsx(filepath)
-            elif filename.lower().endswith(('.jpg', '.png', '.jpeg')):
-                text, images = process_image(filepath)
-            elif filename.lower().endswith('.txt'):
-                with open(filepath, 'r') as file:
-                    text = file.read()
-
-            chunks = chunk_text(text)
-            for i, chunk in enumerate(chunks):
-                chunk_vector = vectorize_text(chunk)
-                doc["data"].append({
-                    "id": i + 1,
-                    "text": chunk,
-                    "vektor": chunk_vector
-                })
-
-            for i, image in enumerate(images):
-                inputs = clip_processor(images=image, return_tensors="pt")
-                outputs = clip_model.get_image_features(**inputs)
-                image_vector = outputs.detach().numpy().tolist()
-
-                # Use CLIP to get image description
-                text_description = clip_processor.tokenizer.decode(clip_model.get_text_features(**inputs).argmax(dim=-1))
-
-                # Vectorize the description using sentence-transformers model
-                description_vector = vectorize_text(text_description)
-
-                doc["data"].append({
-                    "id": len(doc["data"]) + 1,
-                    "text": text_description,
-                    "vektor": description_vector,
-                    "bildvektor": image_vector,
-                    "titel": f"Bild {i + 1}"
-                })
-
-            output_filepath = os.path.join(output_folder, filename + ".json")
-            with open(output_filepath, 'w', encoding='utf-8') as f:
-                json.dump(doc, f, ensure_ascii=False, indent=4)
-
-# Beispiel-Aufruf
-process_folder("input_folder", "processed_data")
+if __name__ == "__main__":
+    main()
