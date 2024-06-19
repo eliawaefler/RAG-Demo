@@ -4,12 +4,37 @@ import streamlit as st
 import os
 import json
 import numpy as np
-from utils/ingest_v8 import vectorize_text
 from transformers import pipeline
 
 # Load vector store
 vector_store = {}
 docs = {}
+
+
+# setup.py
+
+import hashlib
+import fitz  # PyMuPDF
+import docx
+import pandas as pd
+from PIL import Image
+import pytesseract
+from transformers import CLIPProcessor, CLIPModel, AutoTokenizer, AutoModel
+from sentence_transformers import SentenceTransformer
+
+# Initialisieren der Modelle
+clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+sentence_transformer = SentenceTransformer('all-MiniLM-L6-v2')
+
+def vectorize_text(text):
+    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
+    outputs = model(**inputs)
+    embeddings = outputs.last_hidden_state.mean(dim=1).detach().numpy().tolist()
+    return embeddings
+
 
 st.title("Retrieval-Augmented Generation (RAG) App")
 
