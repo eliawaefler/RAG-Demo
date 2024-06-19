@@ -1,0 +1,13 @@
+hashlib
+PyMuPDF
+python-docx
+pandas
+Pillow
+pytesseract
+transformers
+sentence-transformers
+streamlit
+os
+json
+numpy
+setup
