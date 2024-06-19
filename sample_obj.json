@@ -1,0 +1,26 @@
+{
+  "name": "Beispiel Dokument",
+  "unique_id": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "disziplin": "Informatik",
+  "doctype": "Forschungsartikel",
+  "hauptkategorie": "Wissenschaft",
+  "kategorie": "Computerwissenschaften",
+  "subkategorie": "Künstliche Intelligenz",
+  "data": [
+    {
+      "id": 1,
+      "text": "Einführung in die Künstliche Intelligenz.",
+      "vektor": [0.12, 0.45, 0.78, 0.56, 0.34, 0.67, 0.89, 0.23, 0.45, 0.67]
+    },
+    {
+      "id": 2,
+      "text": "Anwendungen von KI in der Medizin.",
+      "vektor": [0.13, 0.46, 0.79, 0.57, 0.35, 0.68, 0.90, 0.24, 0.46, 0.68]
+    },
+    {
+      "id": 3,
+      "text": "Zukünftige Entwicklungen in der KI.",
+      "vektor": [0.14, 0.47, 0.80, 0.58, 0.36, 0.69, 0.91, 0.25, 0.47, 0.69]
+    }
+  ]
+}
