@@ -39,7 +39,7 @@ hf_token = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
 
 # Load LLM with authentication
-llm = pipeline("text-generation", model="gpt-3.5-turbo", use_auth_token=hf_token)
+llm = pipeline("text-generation", model="gpt-neo-2.7B", use_auth_token=hf_token)
 
 # Main page layout
 query = st.text_input("Ask a question:")
