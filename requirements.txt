@@ -1,4 +1,3 @@
-hashlib
 PyMuPDF
 python-docx
 pandas
@@ -7,6 +6,4 @@ pytesseract
 transformers
 sentence-transformers
 streamlit
-os
-json
 numpy
