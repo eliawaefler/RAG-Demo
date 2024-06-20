@@ -33,10 +33,10 @@ def find_best_chunks(query_vec, top_k=5):
 
 
 # Load Hugging Face token from Streamlit secrets
-hf_token = st.secrets["HF_TOKEN"]
+hf_token = st.secrets["HUGGINGFACEHUB_API_TOKEN "]
 
 # Set the environment variable for Hugging Face token
-os.environ["HF_TOKEN"] = hf_token
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
 
 # Load LLM with authentication
 llm = pipeline("text-generation", model="gpt-3.5-turbo", use_auth_token=hf_token)
