@@ -31,8 +31,15 @@ def find_best_chunks(query_vec, top_k=5):
     best_chunks = sorted(similarities, key=similarities.get, reverse=True)[:top_k]
     return best_chunks
 
-# Load LLM
-llm = pipeline("text-generation", model="gpt-3.5-turbo")
+
+# Load Hugging Face token from Streamlit secrets
+hf_token = st.secrets["HF_TOKEN"]
+
+# Set the environment variable for Hugging Face token
+os.environ["HF_TOKEN"] = hf_token
+
+# Load LLM with authentication
+llm = pipeline("text-generation", model="gpt-3.5-turbo", use_auth_token=hf_token)
 
 # Main page layout
 query = st.text_input("Ask a question:")
