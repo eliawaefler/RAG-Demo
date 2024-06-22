@@ -3,8 +3,8 @@ from PIL import Image
 from transformers import CLIPProcessor, CLIPModel
 
 # Load the model and processor
-model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32", cache_dir="./model_cache")
-processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32", cache_dir="./model_cache")
+model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32", cache_dir="../model_cache")
+processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32", cache_dir="../model_cache")
 
 
 def describe_image(image_path):
@@ -32,6 +32,6 @@ def describe_image(image_path):
 
 
 if __name__ == '__main__':
-    image_path = "img.png"  # Replace with the path to your image
+    image_path = "../img.png"  # Replace with the path to your image
     description = describe_image(image_path)
     print("Description:", description)

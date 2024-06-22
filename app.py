@@ -4,7 +4,7 @@ import streamlit as st
 import os
 import json
 import numpy as np
-from ingest import vectorize_text
+from utils.ingest import vectorize_text
 from transformers import pipeline
 
 # Load vector store

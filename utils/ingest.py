@@ -7,7 +7,6 @@ import pandas as pd
 from PIL import Image
 from transformers import CLIPProcessor, CLIPModel, AutoTokenizer, AutoModel
 from sentence_transformers import SentenceTransformer
-import numpy
 import local_embeddings
 
 # Initialize models
