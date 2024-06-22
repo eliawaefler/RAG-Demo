@@ -11,7 +11,7 @@ def download_BLIP():
     from transformers import BlipProcessor, BlipForConditionalGeneration
 
     # Specify the local directory where you want to save the model and processor
-    local_model_dir = "../blip_model"
+    local_model_dir = "./blip_model"
     
     # Download and save the processor and model locally
     processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
