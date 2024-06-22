@@ -5,6 +5,7 @@ __pycache__/
 
 # ignore local models
 venv/
+blip_model/
 clip_model/
 
 # C extensions
