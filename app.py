@@ -4,7 +4,7 @@ import streamlit as st
 import os
 import json
 import numpy as np
-from utils.ingest import vectorize_text
+from utils.local_embeddings import get_embedding
 from transformers import pipeline
 
 # Load vector store
@@ -44,7 +44,7 @@ llm = pipeline("text-generation", model="gpt-neo-2.7B", use_auth_token=hf_token)
 # Main page layout
 query = st.text_input("Ask a question:")
 if query:
-    query_vec = vectorize_text(query)[0]  # Assuming single vector for the query
+    query_vec = get_embedding(query)[0]
     best_chunks = find_best_chunks(query_vec)
 
     # Dynamic prompt creation

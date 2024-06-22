@@ -5,7 +5,7 @@ __pycache__/
 
 # ignore local models
 venv/
-model_cache/
+clip_model/
 
 # C extensions
 *.so
