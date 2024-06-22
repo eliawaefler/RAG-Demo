@@ -20,4 +20,4 @@ def download_BLIP():
     model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
     model.save_pretrained(local_model_dir)
 
-download_BLIP()
+

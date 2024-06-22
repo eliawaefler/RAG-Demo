@@ -1,3 +1,12 @@
+"""
+THIS SCRIPT IS USED TO CREATE THE JSON FILES WITH VECTORS
+FROM DOCUMENTS. IT CAN BE TESTET WITH THE 'setup_app.py'.
+IT CAN INGEST .JPG .PNG .PDF .DOCX .XLSX and .TXT
+THE OUTPUT IS ALWAYS A .JSON FILE WHICH WILL BE SAVED TO processed_docs.
+THX TO OPENAI, MISTRAL,
+"""
+
+
 import os
 import json
 import hashlib
@@ -148,5 +157,5 @@ def main():
             print(f"Error processing {filename}: {e}")
 
 if __name__ == "__main__":
-    print(local_embeddings.get_embedding("the weather is nice"))
+    print("read file first")
     #main()
