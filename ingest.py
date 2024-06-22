@@ -7,6 +7,8 @@ import pandas as pd
 from PIL import Image
 from transformers import CLIPProcessor, CLIPModel, AutoTokenizer, AutoModel
 from sentence_transformers import SentenceTransformer
+import numpy
+import local_embeddings
 
 # Initialize models
 clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
@@ -72,11 +74,6 @@ def chunk_text(text, chunk_size=1000, overlap=0.2):
         start += chunk_size - overlap_size
     return chunks
 
-def vectorize_text(text):
-    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
-    outputs = model(**inputs)
-    embeddings = outputs.last_hidden_state.mean(dim=1).detach().numpy().tolist()
-    return embeddings
 
 def vectorize_document(filepath, output_folder):
     try:
@@ -109,7 +106,7 @@ def vectorize_document(filepath, output_folder):
 
             chunks = chunk_text(text)
             for i, chunk in enumerate(chunks):
-                chunk_vector = vectorize_text(chunk)
+                chunk_vector = local_embeddings.get_embedding(chunk)
                 doc["data"].append({
                     "id": i + 1,
                     "text": chunk,
@@ -125,7 +122,7 @@ def vectorize_document(filepath, output_folder):
                 text_description = clip_processor.tokenizer.decode(clip_model.get_text_features(**inputs).argmax(dim=-1))
 
                 # Vectorize the description using sentence-transformers model
-                description_vector = vectorize_text(text_description)
+                description_vector = local_embeddings.get_embedding(text_description)
 
                 doc["data"].append({
                     "id": len(doc["data"]) + 1,
@@ -153,4 +150,5 @@ def main():
             print(f"Error processing {filename}: {e}")
 
 if __name__ == "__main__":
-    main()
+    print(local_embeddings.get_embedding("the weather is nice"))
+    #main()
