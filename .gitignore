@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# ignore local models
+venv/
+model_cache/
+
 # C extensions
 *.so
 
