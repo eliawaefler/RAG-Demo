@@ -46,23 +46,21 @@ def read_db(connection_string, table, condition='1=1', printout=False):
         print(f"An error occurred: {e}")
         return e
 
+
 def main():
-
-    data_to_insert = {
-        'id': 4,
-        'name': "Bro",
-        'pet': 'croc'
-    }
-
-    write_to_db(connection_string, table_name, data_to_insert)
-    print("\nEntries in the database:")
-    read_db(connection_string, table_name, printout=True)
-
-
-if __name__ == "__main__":
     connection_string = os.environ["NEON_URL"]
     table_name = "home"
     print(f"len: {len(read_db(connection_string, table_name, printout=True))}")
-
-    main()
+    data_to_insert = {
+        'id': 3,
+        'name': "Elia",
+        'pet': 'gator'
+    }
+    write_to_db(connection_string, table_name, data_to_insert)
+    read_db(connection_string, table_name, printout=True)
     print(f"len: {len(read_db(connection_string, table_name, printout=True))}")
+
+
+
+if __name__ == "__main__":
+    main()
