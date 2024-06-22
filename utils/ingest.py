@@ -73,7 +73,6 @@ def chunk_text(text, chunk_size=1000, overlap=0.2):
         start += chunk_size - overlap_size
     return chunks
 
-
 def vectorize_document(filepath, output_folder):
     try:
         filename = os.path.basename(filepath)
