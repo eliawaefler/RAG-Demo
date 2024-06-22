@@ -16,12 +16,14 @@ tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v
 model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 sentence_transformer = SentenceTransformer('all-MiniLM-L6-v2')
 
+
 def sha256_hash(filename):
     sha256 = hashlib.sha256()
     with open(filename, "rb") as f:
         for byte_block in iter(lambda: f.read(4096), b""):
             sha256.update(byte_block)
     return sha256.hexdigest()
+
 
 def process_pdf(filepath):
     doc = fitz.open(filepath)
