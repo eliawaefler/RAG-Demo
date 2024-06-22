@@ -17,6 +17,7 @@ from PIL import Image
 from transformers import CLIPProcessor, CLIPModel, AutoTokenizer, AutoModel
 from sentence_transformers import SentenceTransformer
 import local_embeddings
+from sha256 import secure_hash
 
 # Initialize models
 clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
@@ -24,13 +25,6 @@ clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 sentence_transformer = SentenceTransformer('all-MiniLM-L6-v2')
-
-def sha256_hash(filename):
-    sha256 = hashlib.sha256()
-    with open(filename, "rb") as f:
-        for byte_block in iter(lambda: f.read(4096), b""):
-            sha256.update(byte_block)
-    return sha256.hexdigest()
 
 def process_pdf(filepath):
     try:
@@ -88,7 +82,7 @@ def vectorize_document(filepath, output_folder):
         if filename.lower().endswith(('.txt', '.pdf', '.docx', '.xlsx', '.jpg', '.png', '.jpeg')):
             doc = {
                 "name": filename,
-                "unique_id": sha256_hash(filepath),
+                "unique_id": secure_hash(filepath),
                 "disziplin": "",
                 "doctype": "",
                 "hauptkategorie": "",

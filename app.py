@@ -6,40 +6,19 @@ import json
 import numpy as np
 from utils.local_embeddings import get_embedding
 from transformers import pipeline
+from utils.RAG import get_vector_store, find_best_chunks
+from utils.local_LLM import mistral_complete
 
-# Load vector store
-vector_store = {}
-docs = {}
 
 st.title("Retrieval-Augmented Generation (RAG) App")
 
-# Load all JSON files from processed_docs folder
-processed_docs_folder = "processed_docs"
-for filename in os.listdir(processed_docs_folder):
-    filepath = os.path.join(processed_docs_folder, filename)
-    if filename.endswith('.json'):
-        with open(filepath, 'r', encoding='utf-8') as file:
-            doc = json.load(file)
-            for item in doc["data"]:
-                key = f"{doc['name']}_{item['id']}"
-                vector_store[key] = np.array(item['vektor'])
-                docs[key] = doc['name']
+vector_store, docs = get_vector_store()
 
-# Function to find the best matching chunks
-def find_best_chunks(query_vec, top_k=5):
-    similarities = {key: np.dot(query_vec, vec) for key, vec in vector_store.items()}
-    best_chunks = sorted(similarities, key=similarities.get, reverse=True)[:top_k]
-    return best_chunks
 
 
 # Load Hugging Face token from Streamlit secrets
 hf_token = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
-
-# Set the environment variable for Hugging Face token
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
-
-# Load LLM with authentication
-llm = pipeline("text-generation", model="gpt-neo-2.7B", use_auth_token=hf_token)
 
 # Main page layout
 query = st.text_input("Ask a question:")

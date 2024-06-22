@@ -7,6 +7,7 @@ __pycache__/
 venv/
 blip_model/
 clip_model/
+_archive/
 
 # C extensions
 *.so
