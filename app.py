@@ -13,6 +13,7 @@ import pandas as pd
 
 vecs, docs, texts = get_vector_store()
 
+
 # Main page
 st.title("Retrieval-Augmented Generation (RAG) App")
 query = st.text_input("Ask a question:")
