@@ -18,13 +18,14 @@ from transformers import CLIPProcessor, CLIPModel, AutoTokenizer, AutoModel
 from sentence_transformers import SentenceTransformer
 import local_embeddings
 from sha256 import secure_hash
-
+"""
 # Initialize models
 clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
 clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 sentence_transformer = SentenceTransformer('all-MiniLM-L6-v2')
+"""
 
 def process_pdf(filepath):
     try:
@@ -76,7 +77,7 @@ def chunk_text(text, chunk_size=1000, overlap=0.2):
         start += chunk_size - overlap_size
     return chunks
 
-def vectorize_document(filepath, output_folder):
+def vectorize_document(filepath, output_folder="..//processed_docs"):
     try:
         filename = os.path.basename(filepath)
         if filename.lower().endswith(('.txt', '.pdf', '.docx', '.xlsx', '.jpg', '.png', '.jpeg')):
@@ -113,7 +114,7 @@ def vectorize_document(filepath, output_folder):
                     "text": chunk,
                     "vektor": chunk_vector
                 })
-
+            """
             for i, image in enumerate(images):
                 inputs = clip_processor(images=image, return_tensors="pt")
                 outputs = clip_model.get_image_features(**inputs)
@@ -132,7 +133,7 @@ def vectorize_document(filepath, output_folder):
                     "bildvektor": image_vector,
                     "titel": f"Bild {i + 1}"
                 })
-
+            """
             output_filepath = os.path.join(output_folder, filename + ".json")
             with open(output_filepath, 'w', encoding='utf-8') as f:
                 json.dump(doc, f, ensure_ascii=False, indent=4)
@@ -151,5 +152,6 @@ def main():
             print(f"Error processing {filename}: {e}")
 
 if __name__ == "__main__":
-    print("read file first")
+    #print("read file first")
     #main()
+    vectorize_document("C:\\Users\\eliaw\\python projects\\RAG-Demo\\documents\\mateo.txt")

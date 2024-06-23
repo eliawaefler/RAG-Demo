@@ -118,7 +118,7 @@ def mistral_vision():
 
 
 if __name__ == '__main__':
-    # print(mistral_complete(input()))
-    mistral_chat()
+    print(mistral_complete(input()))
+    #mistral_chat()
     # mistral_vision()
     # print(mistral_embedding("the color yellow"))
