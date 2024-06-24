@@ -14,9 +14,12 @@ import fitz  # PyMuPDF
 import docx
 import pandas as pd
 from PIL import Image
-from transformers import CLIPProcessor, CLIPModel, AutoTokenizer, AutoModel
-from sentence_transformers import SentenceTransformer
+#from transformers import CLIPProcessor, CLIPModel, AutoTokenizer, AutoModel
+#from sentence_transformers import SentenceTransformer
 import local_embeddings
+import local_LLM
+import local_BLIP
+import local_CLIP
 from sha256 import secure_hash
 
 
@@ -70,7 +73,7 @@ def chunk_text(text, chunk_size=1000, overlap=0.2):
         start += chunk_size - overlap_size
     return chunks
 
-def vectorize_document(filepath, output_folder="..//processed_docs"):
+def vectorize_document(filepath, output_folder="..//data//processed_docs"):
     try:
         filename = os.path.basename(filepath)
         if filename.lower().endswith(('.txt', '.pdf', '.docx', '.xlsx', '.jpg', '.png', '.jpeg')):
@@ -109,21 +112,12 @@ def vectorize_document(filepath, output_folder="..//processed_docs"):
                 })
 
             for i, image in enumerate(images):
-                inputs = clip_processor(images=image, return_tensors="pt")
-                outputs = clip_model.get_image_features(**inputs)
-                image_vector = outputs.detach().numpy().tolist()
-
-                # Use CLIP to get image description
-                text_description = clip_processor.tokenizer.decode(clip_model.get_text_features(**inputs).argmax(dim=-1))
-
-                # Vectorize the description using sentence-transformers model
-                description_vector = local_embeddings.get_embedding(text_description)
-
+                description = local_BLIP.describe_image(image)
                 doc["data"].append({
                     "id": len(doc["data"]) + 1,
-                    "text": text_description,
-                    "vektor": description_vector,
-                    "bildvektor": image_vector,
+                    "text": description,
+                    "vektor": local_embeddings.get_embedding(description),
+                    "bildvektor": local_CLIP.embedd_image(image),
                     "titel": f"Bild {i + 1}"
                 })
 
@@ -133,9 +127,10 @@ def vectorize_document(filepath, output_folder="..//processed_docs"):
     except Exception as e:
         raise RuntimeError(f"Failed to vectorize document {filepath}: {e}")
 
+
 def main():
-    input_folder = "documents"
-    output_folder = "processed_docs"
+    input_folder = "..//data//syntetic//mittel"
+    output_folder = "..//data//synt_processed_docs//mittel"
     os.makedirs(output_folder, exist_ok=True)
     for filename in os.listdir(input_folder):
         filepath = os.path.join(input_folder, filename)
@@ -144,20 +139,11 @@ def main():
         except Exception as e:
             print(f"Error processing {filename}: {e}")
 
-print("init start")
-# Initialize models
-clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32", cache_dir="clip_model")
-print("clip1")
-clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32", cache_dir="clip_model")
-print("clip2")
-tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
-print("token1")
-model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
-print("token2")
-sentence_transformer = SentenceTransformer('all-MiniLM-L6-v2')
-print("inito done")
 
 if __name__ == "__main__":
-    #print("read file first")
+    print("read file first")
+    #vectorize_document("C:\\Users\\eliaw\\python projects\\RAG-Demo\\data\\documents\\ISB-020-U3-C-D-01-V08703-001-000.pdf")
+    vectorize_document("../data/documents/2.xlsx")
+    vectorize_document("../data/documents/ISB-020-U3-D-D-01-V08006-002-000.docx")
     #main()
-    vectorize_document("C:\\Users\\eliaw\\python projects\\RAG-Demo\\documents\\img.png")
+    #ISB-020-U3-C-D-01-V08703-001-000.pdf

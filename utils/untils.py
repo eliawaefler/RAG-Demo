@@ -36,11 +36,11 @@ def create_synt_imgs():
     d_data, e_data = read_excel_data('A4_DokumententypenkatalogKBOB.xlsx')
 
     for i in range(4, len(d_data)-1):
-        openai_handler.img_create(d_data[i]+e_data[i], download_path=d_data[i]+"_sample.png")
+        openai_handler.img_create(f"Ansicht eines PDF-Dokuments, dass mit Bauen zu tun hat und für den"
+                                  f"Gebäudebetrieb relevant ist. das Dokument wird wie "
+                                  f"folgt klassifiziert: {d_data[i]} : {e_data[i]}. generiere nur das Dokument.",
+                                  download_path=f"..//data//syntetic//2//{d_data[i]}_sample.png")
         time.sleep(30)
-
-
-
 
 if __name__ == '__main__':
     create_synt_imgs()

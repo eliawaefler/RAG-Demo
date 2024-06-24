@@ -8,6 +8,7 @@ venv/
 blip_model/
 clip_model/
 _archive/
+data/
 
 # C extensions
 *.so

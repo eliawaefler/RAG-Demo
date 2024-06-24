@@ -4,11 +4,10 @@ from transformers import CLIPProcessor, CLIPModel
 
 # Load the model and processor
 #"openai/clip-vit-base-patch32", cache_dir=
-model = CLIPModel.from_pretrained("../clip_model")
-processor = CLIPProcessor.from_pretrained("../clip_model")
+model = CLIPModel.from_pretrained("clip_model")
+processor = CLIPProcessor.from_pretrained("clip_model")
 
-def embedd_image(image_path):
-    image = Image.open(image_path)
+def embedd_image(image):
     inputs = processor(images=image, return_tensors="pt")
     outputs = model.get_image_features(**inputs)
     return outputs[0].tolist() # Return the SINGLE IMAGE embedding
@@ -24,7 +23,9 @@ def embedd_text(text):
 
 if __name__ == '__main__':
     image_path = "..//data//documents//img.png"  # Replace with the path to your image
-    query = embedd_image(image_path)
+    image = Image.open(image_path)
+
+    query = embedd_image(image=image)
     store = {e: embedd_text(e) for e in ["photo of nature", "painting by davinchi", "screenshot on laptop",
                                       "sketch by architect", "diagramm in MS visio"]}
     from utils.RAG import *
