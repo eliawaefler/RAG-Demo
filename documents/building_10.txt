@@ -1,5 +1,0 @@
-Building Name: Willis Tower
-Location: Chicago
-Height: 442.1 m
-Floors: 110
-Year Completed: 1973

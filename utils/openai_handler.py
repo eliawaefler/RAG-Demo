@@ -1,4 +1,6 @@
 import os
+import time
+
 from openai import OpenAI
 import requests
 import base64
@@ -31,7 +33,7 @@ def image_to_base64(image_path):
         return str(base64.b64encode(image_file.read()).decode('utf-8'))
 
 
-def gpt4_new(prompt_text, system_p="assistent", temp=0, gpt_model="gpt-3.5-turbo"):
+def gpt4_new(prompt_text, system_p="assistent", temp=0, gpt_model="gpt-4-turbo"):
     try:
         system_prompt = system_prompts[system_p]
     except KeyError:
@@ -152,11 +154,12 @@ def table_to_text(table=None, prompt="describe this table in plain text. "
     else:
         return ValueError
 
-
 if __name__ == "__main__":
+    print("read first")
     #print("here are all functions that directly call openai.")
-    #img_create("a skier in the swiss alps", download_path="skier.png")
+    #img_create("was auf dem bild sein soll", download_path="abc.png")
     #img_to_text(img_base64=encode_image_to_base64("skier.png"))
     #print(image_to_base64("skier.png"))
     #print(vectorize_data("test string"))
-    print(gpt4_new(input()))
+    #print(gpt4_new(input()))
+

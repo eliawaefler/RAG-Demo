@@ -3,35 +3,30 @@ from PIL import Image
 from transformers import CLIPProcessor, CLIPModel
 
 # Load the model and processor
-model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32", cache_dir="../clip_model")
-processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32", cache_dir="../clip_model")
+#"openai/clip-vit-base-patch32", cache_dir=
+model = CLIPModel.from_pretrained("../clip_model")
+processor = CLIPProcessor.from_pretrained("../clip_model")
 
-
-def describe_image(image_path):
+def embedd_image(image_path):
     image = Image.open(image_path)
     inputs = processor(images=image, return_tensors="pt")
     outputs = model.get_image_features(**inputs)
+    return outputs[0].tolist() # Return the SINGLE IMAGE embedding
 
-    # Find the most similar text descriptions in the model's vocabulary
-    descriptions = [
-        "a photo of a cat", "a photo of a dog", "a photo of a person", "a photo of a car",
-        "a photo of a building", "a photo of nature", "a photo of food", "a photo of an animal"
-    ]
-    text_inputs = processor(text=descriptions, return_tensors="pt", padding=True)
-    text_outputs = model.get_text_features(**text_inputs)
 
-    # Calculate cosine similarity between image and text embeddings
-    image_features = outputs.image_embeds
-    text_features = text_outputs.text_embeds
-    similarities = torch.nn.functional.cosine_similarity(image_features, text_features, dim=1)
-
-    # Get the most similar description
-    best_match = descriptions[torch.argmax(similarities).item()]
-
-    return best_match
+def embedd_text(text):
+    # Process the text input to prepare it for the model
+    inputs = processor(text=[text], return_tensors="pt", padding=True)  # Wrap text in a list for batch processing
+    outputs = model.get_text_features(**inputs)
+    # Access the first element of the batch, convert the tensor to a list
+    return outputs[0].tolist()  # Access the vector for the single text in
 
 
 if __name__ == '__main__':
-    image_path = "../img.png"  # Replace with the path to your image
-    description = describe_image(image_path)
-    print("Description:", description)
+    image_path = "..//data//documents//img.png"  # Replace with the path to your image
+    query = embedd_image(image_path)
+    store = {e: embedd_text(e) for e in ["photo of nature", "painting by davinchi", "screenshot on laptop",
+                                      "sketch by architect", "diagramm in MS visio"]}
+    from utils.RAG import *
+    print(find_best_chunks(store, query_vec=query, top_k=1))
+    #print("Description:", description)

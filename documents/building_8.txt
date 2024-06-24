@@ -1,5 +1,0 @@
-Building Name: Petronas Towers
-Location: Kuala Lumpur
-Height: 452 m
-Floors: 88
-Year Completed: 1998

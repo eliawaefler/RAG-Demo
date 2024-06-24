@@ -1,5 +1,0 @@
-Building Name: One World Trade Center
-Location: New York City
-Height: 541.3 m
-Floors: 104
-Year Completed: 2013

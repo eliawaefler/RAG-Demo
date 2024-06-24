@@ -26,3 +26,4 @@ def download_BLIP():
     model.save_pretrained(local_model_dir)
 
 
+download_CLIP()

@@ -1,5 +1,6 @@
 from openai import OpenAI
 import base64
+import requests
 
 system_prompts = {
     "doc_generator": "Du bist eine Maschine, die synthetische Dokumente generiert, " \
@@ -8,6 +9,14 @@ system_prompts = {
     "doc_classifier": "Du bist eine Maschine, die Dokumente klassifiziert. " \
                       "Du antwortest IMMER in einer Python-Liste. []"
 }
+
+
+def mistral_connection(port=1234):
+    try:
+        requests.get(f'http://localhost:{port}/v1')
+        return True
+    except requests.ConnectionError:
+        return False
 
 
 def mistral_complete(prompt_text, system_p="assistent"):
@@ -118,7 +127,8 @@ def mistral_vision():
 
 
 if __name__ == '__main__':
-    print(mistral_complete(input()))
+    #print(mistral_complete(input()))
+    print(mistral_connection())
     #mistral_chat()
     # mistral_vision()
     # print(mistral_embedding("the color yellow"))
