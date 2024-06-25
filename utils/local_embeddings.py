@@ -1,3 +1,8 @@
+"""
+WITH THIS SCRIPT, LOCAL EMBEDDINGS CAN BE CREATED
+THE MODEL IS all-MiniLM-L6-v2
+"""
+
 from sentence_transformers import SentenceTransformer
 import numpy as np
 import json

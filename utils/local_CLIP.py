@@ -1,3 +1,9 @@
+"""
+THIS SCRIPT INTERACTS WITH THE DOWNLOADED CLIP MODEL
+IT IS USED TO GENERATE EMBEDDINGS FOR IMAGES AND TEXT IN THE SAME VECTORSPACE.
+THE CLIP MODEL MUST BE LOCATED IN THE SAME DIR AS THIS SCRIPT
+"""
+
 import torch
 from PIL import Image
 from transformers import CLIPProcessor, CLIPModel
@@ -10,7 +16,7 @@ processor = CLIPProcessor.from_pretrained("clip_model")
 def embedd_image(image):
     inputs = processor(images=image, return_tensors="pt")
     outputs = model.get_image_features(**inputs)
-    return outputs[0].tolist() # Return the SINGLE IMAGE embedding
+    return outputs[0].tolist()  # Return the SINGLE IMAGE embedding
 
 
 def embedd_text(text):
@@ -22,7 +28,7 @@ def embedd_text(text):
 
 
 if __name__ == '__main__':
-    image_path = "..//data//documents//img.png"  # Replace with the path to your image
+    image_path = "../data/documents/testset_small/img.png"  # Replace with the path to your image
     image = Image.open(image_path)
 
     query = embedd_image(image=image)

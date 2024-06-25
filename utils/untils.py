@@ -4,6 +4,74 @@ import time
 import json
 from local_embeddings import get_embedding
 from local_CLIP import embedd_text
+import json
+import os
+import numpy as np
+
+
+def load_classes(class_type):
+    with open(f"../data/classes/{class_type}.json", 'r') as file:
+        return json.load(file)["data"]
+
+
+def dot_product(vec1, vec2):
+    return np.dot(vec1, vec2)
+
+
+def classify_document(document, categories, disziplines, doctypes):
+    document["hauptkategorie"] = classify_item(document, categories, "bildvektor", "vektor")
+    document["disziplin"] = classify_item(document, disziplines, "bildvektor", "vektor")
+    document["doctype"] = classify_item(document, doctypes, "bildvektor", "vektor")
+    return document
+
+
+def classify_item(document, classes, clipv_key, bildvektor_key):
+    max_score = -float('inf')
+    best_class = None
+
+    for cls in classes:
+        score_clipv = dot_product(document["data"][0][clipv_key], cls["CLIPV"])
+        score_bildvektor = dot_product(document["data"][0][bildvektor_key], cls["LLMV"])
+        score = score_clipv + score_bildvektor
+
+        if score > max_score:
+            max_score = score
+            best_class = cls
+
+    if best_class:
+        if not np.allclose(dot_product(document["data"][0]["vektor"], best_class["LLMV"]), 0.1) or not np.allclose(
+                dot_product(document["data"][0]["bildvektor"], best_class["CLIPV"]), 0.1):
+            print(f"Discrepancy found in document {document['name']} for class {best_class['NAME']}")
+
+    return best_class["CODE"] if best_class else None
+
+
+def process_documents(folder):
+    categories = load_classes("categories")
+    disziplines = load_classes("disziplines")
+    doctypes = load_classes("doctypes")
+
+    for filename in os.listdir(folder):
+        if filename.endswith(".json"):
+            filepath = os.path.join(folder, filename)
+            with open(filepath, 'r') as file:
+                document = json.load(file)
+                classified_document = classify_document(document, categories, disziplines, doctypes)
+                save_classified_document(classified_document, folder, filename)
+
+
+def save_classified_document(document, folder, filename):
+    with open(os.path.join(folder, filename), 'w') as file:
+        json.dump(document, file, indent=4)
+
+
+def classify_all_documents():
+    haupt_folder = "../data/synth_processed_docs/haupt"
+    mittel_folder = "../data/synth_processed_docs/mittel"
+
+    process_documents(haupt_folder)
+    process_documents(mittel_folder)
+
 
 def vectorize_classes_from_json(file_path):
     """
@@ -83,6 +151,8 @@ def create_synt_imgs():
 
 if __name__ == '__main__':
     print("read file")
+
+    classify_all_documents()
     #create_synt_imgs()
 
     #vectorize_classes_from_json('../data/classes/subcategories.json')

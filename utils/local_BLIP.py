@@ -1,3 +1,9 @@
+"""
+THIS SCRIPT INTERACTS WITH THE DOWNLOADED BLIP MODEL
+IT IS NOT USED TO GENERATE TEXT DESCRIPTIONS FOR AN IMAGE.
+THE BLIP MODEL MUST BE LOCATED IN THE SAME DIR AS THIS SCRIPT
+"""
+
 import torch
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from PIL import Image
@@ -22,8 +28,5 @@ def describe_image(image):
 
 
 if __name__ == '__main__':
-    image = Image.open("..//data//syntetic//2//Fachkonzepte Heizung oder Lüftung oder Klima oder Sanitär_sample.png")  # Replace with your image path
+    image = Image.open("../data/synthetic//2//Fachkonzepte Heizung oder Lüftung oder Klima oder Sanitär_sample.png")  # Replace with your image path
     print(describe_image(image=image))
-
-
-    """HOW TO GIVE IT A PROMPT FOR THE DESCRIPTION"""

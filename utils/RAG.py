@@ -3,7 +3,8 @@ import os
 import numpy as np
 from utils.local_embeddings import get_embedding
 
-def get_vector_store(folder_path="C:\\Users\\eliaw\\python projects\\RAG-Demo\\data\\processed_docs"):
+
+def get_vector_store(folder_path="C:\\Users\\eliaw\\python projects\\RAG-Demo\\data\\processed_docs_sample"):
     my_vector_store = {}
     my_docs = {}
     my_texts = {}

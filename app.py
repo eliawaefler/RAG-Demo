@@ -37,6 +37,7 @@ def main():
         sst["mistral"] = True
         st.write("mistral geladen: " + str(mistral_connection()))
     else:
+        sst["mistral"] = False
         st.write("internet verbunden: " + str(internet_connection()))
     if query:
         with st.spinner("processing"):
@@ -45,31 +46,11 @@ def main():
             context = "\n\n".join([f"Chunk {i+1}: {texts[chunk]}" for i, chunk in enumerate(best_chunks)])
             prompt = f"Beantworte die folgende Frage auf Deutsch, mit den Informationen:" \
                      f"\n\n{context}\n\nFrage: {query}\nAntwort:"
-
-            if sst.mistral:
-                if mistral_connection():
-                    st.write("using mistral")
-                    response = mistral_complete(prompt)
-                else:
-                    st.write("mistral ist nicht geladen.")
-                    response = False
-            elif internet_connection():
-                st.write("using GPT4")
-                response = gpt4_new(prompt)
-            else:
-                st.write("bitte lade mistral lokal oder verbinde mit dem internet")
-                response = False
-
         l, r = st.columns([1, 1])
-        with l:
-            # Display conversation
-            st.write(f"**Query:** {query}")
-            st.write(f"**Answer:** {response}")
-
         with r:
             # Display most relevant document
             best_doc = docs[best_chunks[0]]
-            doc_filepath = os.path.join("data\\documents", best_doc)
+            doc_filepath = os.path.join("data\\documents_sample", best_doc)
             if best_doc.lower().endswith('.pdf'):
                 with fitz.open(doc_filepath) as doc:
                     text = ""
@@ -96,8 +77,23 @@ def main():
                     text = file.read()
                     st.write(f"**Most Relevant Document:** {best_doc}")
                     st.write(text)
-
-
+        with l:
+            if sst.mistral:
+                if mistral_connection():
+                    st.write("using mistral")
+                    response = mistral_complete(prompt)
+                else:
+                    st.write("mistral ist nicht geladen.")
+                    response = False
+            elif internet_connection():
+                st.write("using GPT4")
+                response = gpt4_new(prompt)
+            else:
+                st.write("bitte lade mistral lokal oder verbinde mit dem internet")
+                response = False
+            # Display conversation
+            st.write(f"**Query:** {query}")
+            st.write(f"**Answer:** {response}")
 
 
 sst = st.session_state

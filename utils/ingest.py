@@ -6,18 +6,13 @@ THE OUTPUT IS ALWAYS A .JSON FILE WHICH WILL BE SAVED TO processed_docs.
 THX TO OPENAI, MISTRAL,
 """
 
-
 import os
 import json
-import hashlib
 import fitz  # PyMuPDF
 import docx
 import pandas as pd
 from PIL import Image
-#from transformers import CLIPProcessor, CLIPModel, AutoTokenizer, AutoModel
-#from sentence_transformers import SentenceTransformer
 import local_embeddings
-import local_LLM
 import local_BLIP
 import local_CLIP
 from sha256 import secure_hash
@@ -38,6 +33,7 @@ def process_pdf(filepath):
     except Exception as e:
         raise RuntimeError(f"Failed to process PDF: {e}")
 
+
 def process_docx(filepath):
     try:
         doc = docx.Document(filepath)
@@ -45,6 +41,7 @@ def process_docx(filepath):
         return "\n".join(text), []
     except Exception as e:
         raise RuntimeError(f"Failed to process DOCX: {e}")
+
 
 def process_xlsx(filepath):
     try:
@@ -56,12 +53,14 @@ def process_xlsx(filepath):
     except Exception as e:
         raise RuntimeError(f"Failed to process XLSX: {e}")
 
+
 def process_image(filepath):
     try:
         image = Image.open(filepath)
         return "", [image]
     except Exception as e:
         raise RuntimeError(f"Failed to process image: {e}")
+
 
 def chunk_text(text, chunk_size=1000, overlap=0.2):
     chunks = []
@@ -72,6 +71,7 @@ def chunk_text(text, chunk_size=1000, overlap=0.2):
         chunks.append(text[start:end])
         start += chunk_size - overlap_size
     return chunks
+
 
 def vectorize_document(filepath, output_folder="..//data//processed_docs"):
     try:
@@ -129,8 +129,8 @@ def vectorize_document(filepath, output_folder="..//data//processed_docs"):
 
 
 def main():
-    input_folder = "..//data//syntetic//mittel"
-    output_folder = "..//data//synt_processed_docs//mittel"
+    input_folder = "..//data//synthetic//mittel"
+    output_folder = "..//data//synth_processed_docs//mittel"
     os.makedirs(output_folder, exist_ok=True)
     for filename in os.listdir(input_folder):
         filepath = os.path.join(input_folder, filename)
@@ -142,8 +142,9 @@ def main():
 
 if __name__ == "__main__":
     print("read file first")
-    #vectorize_document("C:\\Users\\eliaw\\python projects\\RAG-Demo\\data\\documents\\ISB-020-U3-C-D-01-V08703-001-000.pdf")
-    vectorize_document("../data/documents/2.xlsx")
-    vectorize_document("../data/documents/ISB-020-U3-D-D-01-V08006-002-000.docx")
+    #vectorize_document("C:\\Users\\eliaw\\python projects\\RAG-
+    #Demo\\data\\documents\\ISB-020-U3-C-D-01-V08703-001-000.pdf")
+    vectorize_document("../data/documents/testset_small/img.png")
+    #vectorize_document("../data/documents/pdf/ISB-020-U3-D-D-01-V08006-002-000.docx")
     #main()
     #ISB-020-U3-C-D-01-V08703-001-000.pdf

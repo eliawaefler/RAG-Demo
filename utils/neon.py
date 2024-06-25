@@ -27,7 +27,6 @@ def write_to_db(connection_string, table, data):
         return e
 
 
-
 def read_db(connection_string, table, condition='1=1', printout=False):
     try:
         conn = psycopg2.connect(connection_string)
@@ -59,7 +58,6 @@ def main():
     write_to_db(connection_string, table_name, data_to_insert)
     read_db(connection_string, table_name, printout=True)
     print(f"len: {len(read_db(connection_string, table_name, printout=True))}")
-
 
 
 if __name__ == "__main__":
