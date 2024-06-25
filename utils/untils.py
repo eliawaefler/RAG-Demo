@@ -1,6 +1,44 @@
 import openpyxl
 import openai_handler
 import time
+import json
+from local_embeddings import get_embedding
+from local_CLIP import embedd_text
+
+def vectorize_classes_from_json(file_path):
+    """
+    used to create vectors for the classes.
+    :param file_path: the json containing the classes
+    :return: True if successful
+    """
+    # Open and load the JSON file
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+
+    # Iterate through each entry in the "data" list
+    for entry in data['data']:
+        # Concatenate NAME and DESC
+        combined_text = entry['NAME'] + " " + entry['DESC']
+
+        # Use the CLIP_embedd and LLM_embedd functions to get the vectors
+
+        try:
+            clip_vector = embedd_text(combined_text)
+        except Exception as e:
+            print(e)
+            print(combined_text)
+            clip_vector = []
+
+        llm_vector = get_embedding(combined_text)
+
+        # Add the vectors to the JSON entry
+        entry['CLIPV'] = clip_vector  # Ensure the vectors are converted to lists
+        entry['LLMV'] = llm_vector
+
+    # Save the updated JSON back to the file
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
+    return True
 
 
 def read_excel_data(filename):
@@ -42,5 +80,9 @@ def create_synt_imgs():
                                   download_path=f"..//data//syntetic//2//{d_data[i]}_sample.png")
         time.sleep(30)
 
+
 if __name__ == '__main__':
-    create_synt_imgs()
+    print("read file")
+    #create_synt_imgs()
+
+    #vectorize_classes_from_json('../data/classes/subcategories.json')
