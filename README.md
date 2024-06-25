@@ -1,1 +1,1 @@
-# RAG-Demo
+# Lokale RAG-Demo
