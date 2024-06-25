@@ -2,8 +2,10 @@
 
 import streamlit as st
 import os
+
+import utils.local_CLIP
 from utils.local_embeddings import get_embedding
-from utils.RAG import get_vector_store, find_best_chunks
+from utils.RAG import get_text_vector_store, get_img_vector_store, find_best_chunks
 from utils.local_LLM import *
 from utils.openai_handler import gpt4_new
 import fitz
@@ -11,6 +13,27 @@ from PIL import Image
 import docx
 import pandas as pd
 import requests
+from utils.local_CLIP import *
+from transformers import CLIPProcessor, CLIPModel
+#model = CLIPModel.from_pretrained("./utils/clip_model")
+#processor = CLIPProcessor.from_pretrained("./utils/clip_model")
+
+
+def find_file(root_dir, file_name):
+    """
+    Search for a file within a directory and all its subdirectories.
+
+    Parameters:
+    - root_dir (str): The root directory to start the search from.
+    - file_name (str): The name of the file to find.
+
+    Returns:
+    - str: The path to the file if found, otherwise None.
+    """
+    for dirpath, dirnames, filenames in os.walk(root_dir):
+        if file_name in filenames:
+            return os.path.join(dirpath, file_name)
+    return None
 
 
 def internet_connection() -> bool:
@@ -31,8 +54,8 @@ def main():
         sst.mistral = False
 
     # Main page
-    st.title("Retrieval-Augmented Generation (RAG) App")
-    query = st.text_input("Ask a question:")
+    st.title("Komplett lokale Retrieval-Augmented Generation (RAG) App")
+    query = st.text_input("Frage etwas:")
     if st.toggle("openai/mistral"):
         sst["mistral"] = True
         st.write("mistral geladen: " + str(mistral_connection()))
@@ -41,8 +64,11 @@ def main():
         st.write("internet verbunden: " + str(internet_connection()))
     if query:
         with st.spinner("processing"):
-            query_vec = get_embedding(query)
-            best_chunks = find_best_chunks(vectorstore=vecs, query_vec=query_vec)  # mit sim search ersetzen
+            query_text_vec = get_embedding(query)
+            query_img_vec = embedd_text(query)
+            best_chunks = find_best_chunks(vectorstore=txt_vecs, query_vec=query_text_vec)
+            #best_imgs = find_best_chunks(vectorstore=img_vecs, query_vec=query_img_vec)
+            #best_chunks = [] #combine with imgs
             context = "\n\n".join([f"Chunk {i+1}: {texts[chunk]}" for i, chunk in enumerate(best_chunks)])
             prompt = f"Beantworte die folgende Frage auf Deutsch, mit den Informationen:" \
                      f"\n\n{context}\n\nFrage: {query}\nAntwort:"
@@ -50,7 +76,9 @@ def main():
         with r:
             # Display most relevant document
             best_doc = docs[best_chunks[0]]
-            doc_filepath = os.path.join("data\\documents_sample", best_doc)
+
+            #doc_filepath = os.path.join("data\\documents", best_doc)
+            doc_filepath = find_file("data\\documents", best_doc)
             if best_doc.lower().endswith('.pdf'):
                 with fitz.open(doc_filepath) as doc:
                     text = ""
@@ -97,6 +125,24 @@ def main():
 
 
 sst = st.session_state
-vecs, docs, texts = get_vector_store()
+txt_vecs, docs, texts = get_text_vector_store()
+img_vecs, imgs = get_img_vector_store()
+def debug_me():
+    a = []
+    for l in list(txt_vecs.keys()):
+        a.append(len(txt_vecs[l]))
+    b = []
+    for l in list(img_vecs.keys()):
+        b.append(len(img_vecs[l]))
+    print("text")
+    print(len(list(txt_vecs.keys())))
+    print([a])
+    print(len(utils.local_embeddings.get_embedding("hello")))
+
+    print("")
+    print("imgs")
+    print(len(list(img_vecs.keys())))
+    print(b)
+    print(len(utils.local_CLIP.embedd_text("hello")))
 if __name__ == '__main__':
     main()

@@ -129,7 +129,9 @@ def vectorize_document(filepath, output_folder="..//data//processed_docs"):
 
 
 def main():
+    #input_folder = "..//data//synthetic//mittel"
     input_folder = "..//data//synthetic//mittel"
+    #output_folder = "..//data//synth_processed_docs//mittel"
     output_folder = "..//data//synth_processed_docs//mittel"
     os.makedirs(output_folder, exist_ok=True)
     for filename in os.listdir(input_folder):

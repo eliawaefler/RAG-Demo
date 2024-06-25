@@ -10,8 +10,8 @@ from transformers import CLIPProcessor, CLIPModel
 
 # Load the model and processor
 #"openai/clip-vit-base-patch32", cache_dir=
-model = CLIPModel.from_pretrained("clip_model")
-processor = CLIPProcessor.from_pretrained("clip_model")
+model = CLIPModel.from_pretrained("./utils/clip_model")
+processor = CLIPProcessor.from_pretrained("./utils/clip_model")
 
 def embedd_image(image):
     inputs = processor(images=image, return_tensors="pt")
@@ -28,7 +28,7 @@ def embedd_text(text):
 
 
 if __name__ == '__main__':
-    image_path = "../data/documents/testset_small/img.png"  # Replace with the path to your image
+    image_path = "../data/synthetic/2/Fachkonzepte Elektrotechnik_sample.png"  # Replace with the path to your image
     image = Image.open(image_path)
 
     query = embedd_image(image=image)
